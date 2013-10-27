@@ -19,20 +19,20 @@ reactor = subscriptions.SubscriptionsReactor()
 reactor.register_callback(subscriptions.SubscriptionType.TAG, process_tag_update)
 
 @route('/test')
-@view('hello_template')
+@view('index')
 def test():
     return dict()
 
 @route('/')
 def home():
     try:
-        url = unauthenticated_api.get_authorize_url(scope=["likes","comments"])
+        url = unauthenticated_api.get_authorize_url(scope=["likes" , "comments"])
         return '<a href="%s">Connect with Instagram</a>' % url
     except Exception, e:
         print e
 
 @route('/oauth_callback')
-@view('hello_template')
+@view('index')
 def on_callback():
     code = request.GET.get("code")
     if not code:
@@ -41,10 +41,9 @@ def on_callback():
         access_token = unauthenticated_api.exchange_code_for_access_token(code)
         if not access_token:
             return 'Could not get access token'
-        api = client.InstagramAPI(access_token=access_token[0])        
+        api = client.InstagramAPI(access_token=access_token[0])
         tag = api.tag(tag_name='piccollage')
-        #return template('<h1>Hello {{ count }}</h1>', count=tag.media_count)
-        return dict(count=tag.media_count)
+        return dict(count=tag.media_count, token=access_token[0])
     except Exception, e:
         print e
 
