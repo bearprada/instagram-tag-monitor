@@ -1,4 +1,5 @@
 import bottle
+from os import environ
 from bottle import route, post, run, request, view
 from instagram import client, subscriptions
 
@@ -7,7 +8,7 @@ bottle.debug(True)
 CONFIG = {
     'client_id': '27e229137db647e7a4af91f1d1ba6105',
     'client_secret': 'f8900228cca14a72a41fbd2a02d9f0f8',
-    'redirect_uri': 'http://dev.atcc.in:8515/oauth_callback'
+    'redirect_uri': 'http://instacerberus.herokuapp.com/oauth_callback'
 }
 
 unauthenticated_api = client.InstagramAPI(**CONFIG)
@@ -63,4 +64,4 @@ def on_realtime_callback():
         except subscriptions.SubscriptionVerifyError:
             print "Signature mismatch"
 
-run(host='dev.atcc.in', port=8515, reloader=True)
+run(host='0.0.0.0',  port=int(environ.get("PORT", 5000)), reloader=True)
